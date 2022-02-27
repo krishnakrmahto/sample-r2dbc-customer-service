@@ -2,6 +2,7 @@ package com.sampleprojects.r2dbc.customerservice.customerservice.service;
 
 import com.sampleprojects.r2dbc.customerservice.customerservice.entity.Customer;
 import com.sampleprojects.r2dbc.customerservice.customerservice.repository.CustomerRepository;
+import com.sampleprojects.r2dbc.customerservice.customerservice.util.demo.DatabaseSampleInitializer;
 import lombok.RequiredArgsConstructor;
 import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Service;
@@ -11,9 +12,11 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
 
   private final CustomerRepository repository;
+  private final DatabaseSampleInitializer dataInitializer;
 
   public Publisher<Customer> getAllCustomers() {
-    return repository.findAll();
+    return dataInitializer.initializeDatabaseWithSampleValues()
+        .thenMany(repository.findAll());
   }
 
 }
